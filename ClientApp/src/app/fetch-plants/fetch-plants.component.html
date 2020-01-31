@@ -1,0 +1,43 @@
+<h1 id="tableLabel">Watermango</h1>
+
+<p>Keep an eye on the office plants, make sure to keep them watered!</p>
+
+<p *ngIf="!plants"><em>Loading...</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="plants">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Last Watered</th>
+      <th align="center"></th>
+      <th align="center">Time</th>
+      <th align="center">Amount</th>
+      <th>Water</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let plant of plants" [ngStyle]="{ 'background-color': plant.watered ? '' : '#ffe6e6' }">
+      <td><strong>{{ plant.name }}</strong></td>
+      <td>{{ plant.lastWatered == '0001-01-01T00:00:00' ? 'Never' : plant.lastWatered | date : 'short' }}</td>
+      <td align="center">{{ plant.watered ? "Watered" : "Needs Water" }}</td>
+      <td align="center">{{ plant.secondsWatered }}s.</td>
+      <td *ngIf="plant.secondsWatered == 0" align="center">
+        <div class="glass">
+          <div *ngIf="plant.watered" class="blue" style="height: 20px;"></div>
+          <div *ngIf="!plant.watered" class="white" style="height: 20px;"></div>
+        </div>
+      </td>
+      <td *ngIf="plant.secondsWatered > 0" align="center">
+        <div class="glass">
+          <div class="white-border-less" [ngStyle]="{ 'height.px': 20 - plant.secondsWatered * 2 }"></div>
+          <div class="blue" [ngStyle]="{ 'height.px': plant.secondsWatered * 2 }"></div>
+        </div>
+      </td>
+      <td>
+        <input class="start-button" type="button" (click)="waterPlant(plant.id)" title="Start" value="{{ plant.watering && plant.secondsWatered > 0?'Pause':'Start' }}" id="{{ 'waterPlantButton' + plant.id }}" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p *ngIf="cantWater"><em>Please wait 30 seconds before watering the plant again!</em></p>
